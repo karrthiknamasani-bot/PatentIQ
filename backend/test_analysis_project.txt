@@ -1,0 +1,1 @@
+This is a brand new project about a vector database designed specifically for patent retrieval using semantic search and Agentic RAG.

@@ -1,0 +1,43 @@
+{
+  "projectTitle": "Vector Patent Retrieval System",
+  "generatedAt": "2026-07-19T10:12:48.615Z",
+  "analysisId": "6a5ca0ab3b0280f7ee3d94b6",
+  "scores": {
+    "noveltyScore": 85,
+    "similarityScore": 40,
+    "innovationScore": 90,
+    "confidenceScore": 95
+  },
+  "detailedAnalysis": {
+    "executiveSummary": "This is a mocked summary of the patentability assessment.",
+    "noveltyScore": 85,
+    "similarityScore": 40,
+    "innovationScore": 90,
+    "confidenceScore": 95,
+    "recommendation": "Proceed to draft claims",
+    "technicalAnalysis": [
+      "Tech point 1",
+      "Tech point 2"
+    ],
+    "similarPatents": [
+      {
+        "patentId": "US_CHROMA_01",
+        "title": "Vector DB",
+        "similarity": 40,
+        "reason": "Uses vectors"
+      }
+    ],
+    "uniqueInnovations": [
+      "Unique point 1"
+    ],
+    "potentialRisks": [
+      "Legal risk 1"
+    ],
+    "improvementSuggestions": [
+      "Suggestion 1"
+    ],
+    "references": [
+      "US_CHROMA_01"
+    ]
+  }
+}

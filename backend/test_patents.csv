@@ -1,0 +1,3 @@
+patentNumber,title,abstract,inventors,assignee,publicationDate,ipcClasses,source
+US1234567,Test Patent One,This is a test abstract for patent one. It has some text.,John Doe;Jane Smith,TechCorp,2023-01-01,G06F 17/30;H04L 29/06,uspto
+US7654321,Test Patent Two,Another test abstract for the second patent.,Alice Bob,InnovateInc,2022-05-15,A61K 31/00,epo
