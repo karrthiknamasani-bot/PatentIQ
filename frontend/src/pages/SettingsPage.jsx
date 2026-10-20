@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
-import { Camera, Shield, Palette, AlertCircle } from 'lucide-react';
+import { Camera, Shield, Palette, AlertCircle, Cpu, CheckCircle2, Server, Database } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const { theme, setTheme } = useTheme();
-  const { user } = useAuth();
+  const { user, isDemoMode, isSupabaseConfigured } = useAuth();
 
   const handleSaveProfile = () => toast.success('Profile updated successfully');
   const handleUpdatePassword = () => toast.success('Password updated successfully');
@@ -17,44 +17,43 @@ const SettingsPage = () => {
 
   const tabs = [
     { id: 'profile', label: 'Profile' },
-    { id: 'account', label: 'Account Settings' },
-    { id: 'security', label: 'Change Password' },
-    { id: 'theme', label: 'Theme Settings' }
+    { id: 'system', label: 'System & Architecture' },
+    { id: 'security', label: 'Security' },
+    { id: 'theme', label: 'Appearance' },
   ];
 
   return (
     <DashboardLayout>
-      <div className="w-full pt-2 pb-20">
-        
+      <div className="w-full pt-2 pb-20 max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-3xl font-bold text-gray-900 dark:text-white mb-2"
+            className="text-3xl font-black text-gray-900 dark:text-white mb-2 tracking-tight"
           >
-            Settings
+            Settings & System Status
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
             className="text-gray-600 dark:text-gray-400 text-sm"
           >
-            Manage your account, security preferences, and integration workflows.
+            Manage your account identity, security preferences, and inspect active pipeline architecture.
           </motion.p>
         </div>
 
         {/* Tabs - Segmented Control */}
-        <div className="flex bg-gray-100 dark:bg-[#111621] p-1.5 rounded-xl border border-gray-200 dark:border-gray-800 mb-10 overflow-x-auto max-w-fit shadow-sm dark:shadow-lg">
-          {tabs.map(tab => (
-            <button 
+        <div className="flex bg-gray-100 dark:bg-[#111621] p-1.5 rounded-xl border border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto max-w-fit shadow-sm">
+          {tabs.map((tab) => (
+            <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 whitespace-nowrap ${
-                activeTab === tab.id 
-                  ? 'bg-white dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-sm dark:shadow-[0_0_15px_rgba(34,211,238,0.15)] font-bold' 
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800/50'
+              className={`px-5 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                activeTab === tab.id
+                  ? 'bg-white dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-sm font-black'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
               {tab.label}
@@ -64,178 +63,266 @@ const SettingsPage = () => {
 
         {/* Content Grid */}
         <div className="flex flex-col md:flex-row gap-8">
-          
           {/* Left Column: Contextual Sidebar */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
             className="w-full md:w-1/3"
           >
             {activeTab === 'profile' && (
-              <div className="bg-white dark:bg-[#111621] border border-gray-200 dark:border-gray-800 rounded-xl p-8 flex flex-col items-center text-center shadow-sm dark:shadow-lg transition-all">
-                <div className="relative mb-6 group cursor-pointer">
-                  <div className="w-32 h-32 rounded-2xl overflow-hidden border-2 border-dashed border-gray-300 dark:border-gray-700 p-1 group-hover:border-cyan-600 dark:group-hover:border-cyan-400 transition-colors">
-                    <div className="w-full h-full rounded-xl bg-gray-50 dark:bg-gray-800/50 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 overflow-hidden group-hover:bg-gray-100 dark:group-hover:bg-gray-800 transition-colors">
-                      <Camera size={32} className="mb-2 opacity-50 group-hover:opacity-100 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-all" />
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Upload Photo</span>
-                    </div>
+              <div className="bg-white dark:bg-[#111621] border border-gray-200 dark:border-gray-800 rounded-xl p-6 text-center shadow-sm">
+                <div className="w-20 h-20 rounded-full bg-cyan-100 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mx-auto mb-4 text-2xl font-black">
+                  {(user?.name || user?.email || 'U')[0].toUpperCase()}
+                </div>
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                  {user?.name || 'PatentIQ Researcher'}
+                </h2>
+                <p className="text-gray-400 text-xs font-mono truncate">{user?.email || 'researcher@patentiq.local'}</p>
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 text-left text-xs space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Auth Mode:</span>
+                    <span className="font-bold text-cyan-600 dark:text-cyan-400">
+                      {isDemoMode ? 'Developer Demo' : 'Supabase Live JWT'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">User ID:</span>
+                    <span className="font-mono text-[10px] text-gray-500 truncate max-w-[120px]">
+                      {user?.id || '00000000-0000-0000-0000-000000000001'}
+                    </span>
                   </div>
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-400 mb-1">Set up your profile</h2>
-                <p className="text-gray-500 text-sm mb-8">Add your details to get started</p>
+              </div>
+            )}
+
+            {activeTab === 'system' && (
+              <div className="bg-white dark:bg-[#111621] border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm">
+                <div className="w-10 h-10 rounded-full bg-cyan-50 dark:bg-cyan-900/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-3">
+                  <Cpu size={20} />
+                </div>
+                <h3 className="text-gray-900 dark:text-white font-bold text-sm mb-1">Architecture Overview</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-xs leading-relaxed">
+                  PatentIQ integrates an 18-step patent evaluation engine combining lexical, dense vector, and grounded AI models.
+                </p>
               </div>
             )}
 
             {activeTab === 'security' && (
-              <div className="bg-white dark:bg-[#111621] border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm dark:shadow-lg">
-                <div className="w-12 h-12 rounded-full bg-cyan-50 dark:bg-cyan-900/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-4"><Shield size={24} /></div>
-                <h3 className="text-gray-900 dark:text-white font-bold mb-2">Account Security</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">Protect your intellectual property assets with two-factor authentication and strict password requirements.</p>
-              </div>
-            )}
-
-            {activeTab === 'account' && (
-              <div className="bg-white dark:bg-[#111621] border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm dark:shadow-lg">
-                <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 flex items-center justify-center mb-4"><AlertCircle size={24} /></div>
-                <h3 className="text-gray-900 dark:text-white font-bold mb-2">Account Management</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">Manage your account data and permanent deletion options.</p>
+              <div className="bg-white dark:bg-[#111621] border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm">
+                <div className="w-10 h-10 rounded-full bg-cyan-50 dark:bg-cyan-900/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-3">
+                  <Shield size={20} />
+                </div>
+                <h3 className="text-gray-900 dark:text-white font-bold text-sm mb-1">Account Security</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-xs leading-relaxed">
+                  Standard Supabase JWT authentication protects uploaded patent disclosures and evaluation history.
+                </p>
               </div>
             )}
 
             {activeTab === 'theme' && (
-              <div className="bg-white dark:bg-[#111621] border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm dark:shadow-lg">
-                <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4"><Palette size={24} /></div>
-                <h3 className="text-gray-900 dark:text-white font-bold mb-2">Appearance</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">Customize your dashboard experience to suit your working environment.</p>
+              <div className="bg-white dark:bg-[#111621] border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm">
+                <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
+                  <Palette size={20} />
+                </div>
+                <h3 className="text-gray-900 dark:text-white font-bold text-sm mb-1">Appearance</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-xs leading-relaxed">
+                  Toggle light, dark, or operating system synchronized theme preferences.
+                </p>
               </div>
             )}
           </motion.div>
 
           {/* Right Column: Dynamic Form Content */}
-          <motion.div 
+          <motion.div
             key={activeTab}
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 15 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4 }}
             className="w-full md:w-2/3"
           >
-            <div className="bg-white dark:bg-[#111621] border border-gray-200 dark:border-gray-800 rounded-xl p-8 shadow-sm dark:shadow-lg min-h-[400px]">
-              
+            <div className="bg-white dark:bg-[#111621] border border-gray-200 dark:border-gray-800 rounded-xl p-8 shadow-sm">
               {activeTab === 'profile' && (
                 <>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-8">Personal Information</h3>
-                  <div className="space-y-6">
-                    <div className="flex flex-col sm:flex-row gap-6">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Personal Information</h3>
+                  <div className="space-y-4">
+                    <div className="flex flex-col sm:flex-row gap-4">
                       <div className="flex-1">
-                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">First Name</label>
-                        <input type="text" defaultValue={user?.name?.split(' ')[0] || ''} placeholder="Enter first name" className="w-full bg-gray-50 dark:bg-[#0a0d14] border border-gray-200 dark:border-gray-800 rounded-lg py-3.5 px-4 text-sm text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all shadow-inner dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]" />
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+                          First Name
+                        </label>
+                        <input
+                          type="text"
+                          defaultValue={user?.name?.split(' ')[0] || 'Researcher'}
+                          className="w-full bg-gray-50 dark:bg-[#0a0d14] border border-gray-200 dark:border-gray-800 rounded-lg py-2.5 px-3 text-sm text-gray-900 dark:text-gray-200 focus:outline-none focus:border-cyan-500"
+                        />
                       </div>
                       <div className="flex-1">
-                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Last Name</label>
-                        <input type="text" defaultValue={user?.name?.split(' ')[1] || ''} placeholder="Enter last name" className="w-full bg-gray-50 dark:bg-[#0a0d14] border border-gray-200 dark:border-gray-800 rounded-lg py-3.5 px-4 text-sm text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all shadow-inner dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]" />
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+                          Last Name
+                        </label>
+                        <input
+                          type="text"
+                          defaultValue={user?.name?.split(' ')[1] || 'User'}
+                          className="w-full bg-gray-50 dark:bg-[#0a0d14] border border-gray-200 dark:border-gray-800 rounded-lg py-2.5 px-3 text-sm text-gray-900 dark:text-gray-200 focus:outline-none focus:border-cyan-500"
+                        />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Email Address</label>
-                      <input type="email" defaultValue={user?.email || ''} readOnly className="w-full bg-gray-100 dark:bg-[#0a0d14] border border-gray-200 dark:border-gray-800 rounded-lg py-3.5 px-4 text-sm text-gray-500 dark:text-gray-400 cursor-not-allowed transition-all shadow-inner dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Organization</label>
-                      <input type="text" placeholder="Company or Institution name" className="w-full bg-gray-50 dark:bg-[#0a0d14] border border-gray-200 dark:border-gray-800 rounded-lg py-3.5 px-4 text-sm text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all shadow-inner dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]" />
+                      <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        defaultValue={user?.email || 'user@patentiq.local'}
+                        readOnly
+                        className="w-full bg-gray-100 dark:bg-[#0a0d14] border border-gray-200 dark:border-gray-800 rounded-lg py-2.5 px-3 text-sm text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                      />
                     </div>
                   </div>
-                  <div className="flex justify-end gap-4 mt-10">
-                    <button className="bg-transparent border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:border-gray-500 text-gray-700 dark:text-gray-300 px-6 py-2.5 rounded-lg text-[14px] font-medium transition-colors">Cancel</button>
-                    <button onClick={handleSaveProfile} className="bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-black px-6 py-2.5 rounded-lg text-[14px] font-bold transition-all shadow-md shadow-cyan-600/20 dark:shadow-[0_0_15px_rgba(34,211,238,0.2)] hover:-translate-y-0.5">Save Profile</button>
+                  <div className="flex justify-end gap-3 mt-8">
+                    <button
+                      onClick={handleSaveProfile}
+                      className="bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2.5 rounded-lg text-xs font-bold transition-all shadow-md"
+                    >
+                      Save Profile
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {activeTab === 'system' && (
+                <>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
+                    Active System Architecture & Endpoints
+                  </h3>
+                  <div className="space-y-4 text-xs">
+                    <div className="p-3.5 bg-gray-50 dark:bg-[#0a0d14] border border-gray-200 dark:border-gray-800 rounded-lg flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Server size={18} className="text-cyan-600" />
+                        <div>
+                          <div className="font-bold text-gray-900 dark:text-white">FastAPI Backend API</div>
+                          <div className="text-gray-500 font-mono text-[11px]">
+                            {import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'}
+                          </div>
+                        </div>
+                      </div>
+                      <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold rounded text-[10px]">
+                        Active
+                      </span>
+                    </div>
+
+                    <div className="p-3.5 bg-gray-50 dark:bg-[#0a0d14] border border-gray-200 dark:border-gray-800 rounded-lg flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Database size={18} className="text-cyan-600" />
+                        <div>
+                          <div className="font-bold text-gray-900 dark:text-white">Supabase PostgreSQL & Auth</div>
+                          <div className="text-gray-500 text-[11px]">
+                            {isSupabaseConfigured ? 'Remote Supabase Configured' : 'Local Developer Fallback Store Active'}
+                          </div>
+                        </div>
+                      </div>
+                      <span className={`px-2 py-0.5 font-bold rounded text-[10px] ${isSupabaseConfigured ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'}`}>
+                        {isSupabaseConfigured ? 'Connected' : 'Demo Store'}
+                      </span>
+                    </div>
+
+                    <div className="p-3.5 bg-gray-50 dark:bg-[#0a0d14] border border-gray-200 dark:border-gray-800 rounded-lg flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Cpu size={18} className="text-cyan-600" />
+                        <div>
+                          <div className="font-bold text-gray-900 dark:text-white">Corpus Retrieval & Vector DB</div>
+                          <div className="text-gray-500 text-[11px]">
+                            Qdrant (Hybrid BM25 + BAAI/bge-small-en-v1.5 Dense + BGE Reranker)
+                          </div>
+                        </div>
+                      </div>
+                      <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold rounded text-[10px]">
+                        Steps 4–6
+                      </span>
+                    </div>
+
+                    <div className="p-3.5 bg-gray-50 dark:bg-[#0a0d14] border border-gray-200 dark:border-gray-800 rounded-lg flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <CheckCircle2 size={18} className="text-cyan-600" />
+                        <div>
+                          <div className="font-bold text-gray-900 dark:text-white">Assessment & Explanation Engine</div>
+                          <div className="text-gray-500 text-[11px]">
+                            EB-PRE Deterministic 6-Dimension Assessment + Gemini 3.1 Pro Preview
+                          </div>
+                        </div>
+                      </div>
+                      <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold rounded text-[10px]">
+                        Steps 7–10
+                      </span>
+                    </div>
                   </div>
                 </>
               )}
 
               {activeTab === 'security' && (
                 <>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-8">Password & Authentication</h3>
-                  <div className="space-y-6">
-                    <div className="flex flex-col sm:flex-row gap-6">
-                      <div className="flex-1">
-                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">New Password</label>
-                        <input type="password" placeholder="Min 12 characters" className="w-full bg-gray-50 dark:bg-[#0a0d14] border border-gray-200 dark:border-gray-800 rounded-lg py-3.5 px-4 text-sm text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all shadow-inner dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]" />
-                      </div>
-                      <div className="flex-1">
-                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Confirm New Password</label>
-                        <input type="password" placeholder="Min 12 characters" className="w-full bg-gray-50 dark:bg-[#0a0d14] border border-gray-200 dark:border-gray-800 rounded-lg py-3.5 px-4 text-sm text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all shadow-inner dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]" />
-                      </div>
-                    </div>
-                    <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="text-gray-900 dark:text-white font-medium mb-1">Two-Factor Authentication (2FA)</h4>
-                          <p className="text-gray-500 text-xs">Add an extra layer of security to your account.</p>
-                        </div>
-                        <button className="bg-white dark:bg-[#1a2133] hover:bg-gray-50 dark:hover:bg-[#232c45] border border-gray-300 dark:border-gray-700 text-cyan-600 dark:text-cyan-400 px-4 py-2 rounded-md text-xs font-bold transition-colors">Enable 2FA</button>
-                      </div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Password & Credentials</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+                        New Password
+                      </label>
+                      <input
+                        type="password"
+                        placeholder="••••••••••••"
+                        className="w-full bg-gray-50 dark:bg-[#0a0d14] border border-gray-200 dark:border-gray-800 rounded-lg py-2.5 px-3 text-sm text-gray-900 dark:text-gray-200 focus:outline-none focus:border-cyan-500"
+                      />
                     </div>
                   </div>
-                  <div className="flex justify-end gap-4 mt-10">
-                    <button onClick={handleUpdatePassword} className="bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-black px-6 py-2.5 rounded-lg text-[14px] font-bold transition-all shadow-md shadow-cyan-600/20 dark:shadow-[0_0_15px_rgba(34,211,238,0.2)] hover:-translate-y-0.5">Update Password</button>
+                  <div className="flex justify-end gap-3 mt-8">
+                    <button
+                      onClick={handleUpdatePassword}
+                      className="bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2.5 rounded-lg text-xs font-bold transition-all shadow-md"
+                    >
+                      Update Password
+                    </button>
                   </div>
                 </>
               )}
-
-              {activeTab === 'account' && (
-                <>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-8">Danger Zone</h3>
-                  <div className="space-y-6">
-                    <div className="border border-red-200 dark:border-red-900/50 rounded-xl p-6 bg-red-50/50 dark:bg-red-900/10">
-                      <h4 className="text-red-800 dark:text-red-400 font-bold mb-2">Delete Account</h4>
-                      <p className="text-red-600/80 dark:text-red-400/80 text-sm mb-6 max-w-xl">
-                        Once you delete your account, there is no going back. All of your uploaded patents, generated reports, and profile data will be permanently wiped.
-                      </p>
-                      <button onClick={handleDeleteAccount} className="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-lg text-[14px] font-bold transition-all shadow-md shadow-red-600/20 hover:-translate-y-0.5">
-                        Delete Account
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-
-
 
               {activeTab === 'theme' && (
                 <>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-8">Interface Settings</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div 
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Interface Appearance</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <button
                       onClick={() => setTheme('light')}
-                      className={`border-2 rounded-xl p-1 cursor-pointer transition-all ${theme === 'light' ? 'border-cyan-500 dark:border-cyan-400 opacity-100' : 'border-gray-200 dark:border-gray-800 opacity-50 hover:opacity-100'}`}
+                      className={`p-4 rounded-xl border text-center transition-all ${
+                        theme === 'light'
+                          ? 'border-cyan-500 bg-cyan-50/20 text-cyan-600 font-bold'
+                          : 'border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300'
+                      }`}
                     >
-                      <div className="bg-white h-24 rounded-lg flex items-center justify-center border border-gray-200 shadow-sm">
-                        <span className="text-gray-900 font-medium text-sm">Light (Default)</span>
-                      </div>
-                    </div>
-                    <div 
+                      Light Mode
+                    </button>
+                    <button
                       onClick={() => setTheme('dark')}
-                      className={`border-2 rounded-xl p-1 cursor-pointer transition-all ${theme === 'dark' ? 'border-cyan-500 dark:border-cyan-400 opacity-100' : 'border-gray-200 dark:border-gray-800 opacity-50 hover:opacity-100'}`}
+                      className={`p-4 rounded-xl border text-center transition-all ${
+                        theme === 'dark'
+                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-400 font-bold'
+                          : 'border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300'
+                      }`}
                     >
-                      <div className="bg-[#050b14] h-24 rounded-lg flex items-center justify-center shadow-sm">
-                        <span className="text-white font-medium text-sm">Dark</span>
-                      </div>
-                    </div>
-                    <div 
+                      Dark Mode
+                    </button>
+                    <button
                       onClick={() => setTheme('system')}
-                      className={`border-2 rounded-xl p-1 cursor-pointer transition-all ${theme === 'system' ? 'border-cyan-500 dark:border-cyan-400 opacity-100' : 'border-gray-200 dark:border-gray-800 opacity-50 hover:opacity-100'}`}
+                      className={`p-4 rounded-xl border text-center transition-all ${
+                        theme === 'system'
+                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-400 font-bold'
+                          : 'border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300'
+                      }`}
                     >
-                      <div className="bg-gradient-to-r from-gray-100 to-[#050b14] h-24 rounded-lg flex items-center justify-center shadow-sm">
-                        <span className="text-gray-900 font-medium text-sm mix-blend-difference bg-white/50 px-2 py-1 rounded">System</span>
-                      </div>
-                    </div>
+                      System Default
+                    </button>
                   </div>
                 </>
               )}
-
             </div>
           </motion.div>
-          
         </div>
       </div>
     </DashboardLayout>

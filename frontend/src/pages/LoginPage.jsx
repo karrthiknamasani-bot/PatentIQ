@@ -9,7 +9,7 @@ import GoogleLoginButton from '../components/GoogleLoginButton';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login, googleLogin, loading } = useAuth();
+  const { login, loginDemo, googleLogin, loading, isSupabaseConfigured } = useAuth();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,6 +23,12 @@ const LoginPage = () => {
       setRememberMe(true);
     }
   }, []);
+
+  const handleDemoLogin = () => {
+    loginDemo();
+    toast.success('Welcome! Active in Demo Mode');
+    navigate('/dashboard');
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -92,10 +98,29 @@ const LoginPage = () => {
         transition={{ duration: 0.5, delay: 0.1 }}
         className="w-full max-w-[420px] bg-white/70 dark:bg-[#0a0f1c]/70 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-3xl p-8 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_40px_-12px_rgba(0,0,0,0.5)] z-10 relative"
       >
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Welcome back</h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm">Enter your credentials to access your account.</p>
         </div>
+
+        {!isSupabaseConfigured && (
+          <div className="mb-6 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs">
+            <div className="font-semibold mb-1 flex items-center gap-1.5">
+              <span className="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+              Demo Mode — Supabase is not configured.
+            </div>
+            <p className="text-gray-600 dark:text-gray-400 mb-2.5">
+              Remote Supabase credentials are not detected. You can enter with the deterministic local demo identity to test the full pipeline.
+            </p>
+            <button
+              type="button"
+              onClick={handleDemoLogin}
+              className="w-full py-2 px-3 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-xl text-xs transition-colors shadow-sm"
+            >
+              Continue in Demo Mode (Local Evaluator)
+            </button>
+          </div>
+        )}
 
         <form onSubmit={handleLogin}>
           <AuthInput 

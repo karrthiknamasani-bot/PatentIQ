@@ -1,257 +1,286 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Brain, 
-  Search, 
-  BarChart2, 
+import {
+  Brain,
+  Search,
   FileText,
-  Rocket,
   ArrowRight,
-  Sun,
-  Moon,
-  Check,
-  FileSearch,
-  Database,
-  CheckCircle2,
-  Sparkles
+  ShieldAlert,
+  GitBranch,
+  Layers,
+  ChevronRight,
+  Activity,
+  Compass,
+  FileCheck2,
+  FileSearch2
 } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
-import PatentBlueprintVisual from '../components/PatentBlueprintVisual';
+import ThemeToggle from '../components/ThemeToggle';
 
 const LandingPage = () => {
-  const { theme, toggleTheme } = useTheme();
-
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0b0914] text-gray-900 dark:text-white font-sans selection:bg-blue-500/30 transition-colors duration-300 overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#050b14] text-gray-900 dark:text-gray-100 font-sans antialiased selection:bg-cyan-500/30 transition-colors duration-300">
       
-      {/* Navbar */}
-      <nav className="flex items-center justify-between py-6 px-8 max-w-7xl mx-auto w-full relative z-50">
-        <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
-          <span className="text-[20px] font-black tracking-tighter text-gray-900 dark:text-white">
-            Patent<span className="text-blue-600 dark:text-blue-500">IQ</span>
-          </span>
-        </Link>
-        <div className="hidden lg:flex items-center gap-12 text-[13px] font-medium text-gray-700 dark:text-gray-300">
-          <a href="#features" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Features</a>
-          <a href="#solutions" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Solutions</a>
-          <a href="#technology" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Technology</a>
-          <a href="#demo" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Book Demo</a>
-        </div>
-        <div className="flex items-center gap-6 text-[13px] font-medium">
-          <button 
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors p-2"
-          >
-            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
-          <Link to="/register" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors hidden sm:block">Get Started</Link>
-          <Link to="/login" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-bold transition-colors flex items-center gap-2 shadow-sm text-[13px]">
-            Analyze Now <ArrowRight size={14} />
+      {/* Header / Nav */}
+      <header className="border-b border-gray-200/80 dark:border-gray-800/80 bg-white/70 dark:bg-[#050b14]/70 backdrop-blur-md sticky top-0 z-50 transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-1.5 hover:opacity-90 transition-opacity">
+            <span className="text-xl font-black tracking-tighter text-gray-900 dark:text-white">
+              Patent<span className="text-cyan-600 dark:text-cyan-400">IQ</span>
+            </span>
           </Link>
+          
+          <div className="flex items-center gap-6">
+            <ThemeToggle />
+            <Link 
+              to="/login" 
+              className="text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
+              Sign In
+            </Link>
+            <Link 
+              to="/register" 
+              className="bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-black px-4.5 py-2 rounded-lg text-sm font-bold transition-all shadow-md shadow-cyan-600/10 dark:shadow-[0_0_15px_rgba(34,211,238,0.15)]"
+            >
+              Get Started
+            </Link>
+          </div>
         </div>
-      </nav>
+      </header>
 
-      <main className="w-full flex flex-col items-center">
-        
+      <main className="w-full">
+        {/* Banner Disclaimer */}
+        <div className="bg-amber-50 dark:bg-amber-950/20 border-b border-amber-200/60 dark:border-amber-900/30 text-amber-800 dark:text-amber-300 text-xs py-3 px-6 text-center font-medium leading-relaxed">
+          <span className="inline-flex items-center gap-1.5">
+            <ShieldAlert size={14} className="shrink-0" />
+            <strong>Disclaimer:</strong> This is an AI-assisted early-stage assessment and does not constitute legal advice or a determination of patentability.
+          </span>
+        </div>
+
         {/* Hero Section */}
-        <section className="flex flex-col lg:flex-row items-center justify-between gap-12 pt-8 lg:pt-12 pb-16 lg:pb-24 w-full max-w-7xl mx-auto px-8 relative overflow-hidden">
-          {/* Left Content */}
-          <div className="w-full lg:w-[45%] flex flex-col items-start text-left relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-bold tracking-wider uppercase mb-8 border border-blue-100 dark:border-blue-800/50">
-              <span className="text-blue-600 dark:text-blue-400">✨</span>
-              AI-Powered Patent Potential Analysis
-            </div>
-            
-            <h1 className="text-4xl lg:text-[3.5rem] font-extrabold text-gray-900 dark:text-white leading-[1.12] tracking-[-0.02em] mb-6">
-              Evaluate Your Project's <br className="hidden lg:block"/>
-              <span className="text-blue-600 dark:text-blue-500">Patent Potential</span> <br className="hidden lg:block"/>
-              with AI
-            </h1>
-            
-            <p className="text-[14px] text-gray-600 dark:text-gray-400 mb-10 max-w-[540px] leading-[1.8] font-medium tracking-tight">
-              Upload your project report, research paper, or technical documentation. PatentIQ uses Agentic RAG to retrieve relevant patents, compare innovations, estimate novelty, and provide intelligent recommendations before patent filing.
-            </p>
-            
-            <div className="flex flex-wrap items-center gap-4">
-              <Link to="/login" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-lg font-bold transition-colors shadow-lg shadow-blue-600/30 flex items-center gap-2 text-[14px]">
-                Assess My Project <ArrowRight size={16} />
-              </Link>
-              <button className="bg-white dark:bg-[#151a28] border-2 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-900 dark:text-white px-8 py-3.5 rounded-lg font-bold transition-colors flex items-center gap-2 shadow-sm text-[14px]">
-                <FileText size={16} className="text-blue-600 dark:text-blue-400" /> View Demo Report
-              </button>
-            </div>
-          </div>
+        <section className="relative pt-20 pb-24 px-6 max-w-5xl mx-auto text-center overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-cyan-500/10 via-transparent to-transparent dark:from-cyan-500/5 pointer-events-none blur-3xl -z-10" />
 
-          {/* Right Content - Visual Elements */}
-          <div className="w-full lg:w-[55%] relative h-[500px] lg:h-[600px] flex items-center justify-center mt-12 lg:mt-0">
-            <PatentBlueprintVisual />
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-cyan-50 dark:bg-cyan-950/30 text-cyan-700 dark:text-cyan-400 text-[11px] font-bold tracking-wider uppercase mb-8 border border-cyan-200/50 dark:border-cyan-800/30">
+            Evidence-Based AI Assistant
+          </span>
+
+          <h1 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tight leading-[1.08] mb-6">
+            Understand your invention <br className="hidden md:block" />
+            before you invest further.
+          </h1>
+
+          <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-10 leading-relaxed font-medium">
+            An evidence-based AI system that searches prior art, maps technical features, and provides an explainable early-stage patent readiness assessment.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link 
+              to="/register" 
+              className="w-full sm:w-auto bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-black px-8 py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-cyan-600/10 dark:shadow-[0_0_20px_rgba(34,211,238,0.2)] hover:-translate-y-0.5 text-sm flex items-center justify-center gap-1.5"
+            >
+              Analyze an Invention
+              <ArrowRight size={16} />
+            </Link>
+            <a 
+              href="#how-it-works" 
+              className="w-full sm:w-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-700 dark:text-gray-200 px-8 py-3.5 rounded-xl font-bold transition-all hover:-translate-y-0.5 text-sm flex items-center justify-center"
+            >
+              Explore How It Works
+            </a>
           </div>
         </section>
 
-        {/* How It Works Section */}
-        <section id="solutions" className="w-full max-w-7xl mx-auto px-8 py-16 lg:py-20 border-t border-gray-100 dark:border-gray-800/50">
-          <div className="text-center mb-16">
-            <h2 className="text-[28px] lg:text-[36px] font-extrabold text-gray-900 dark:text-white mb-4 tracking-[-0.02em] leading-tight">How PatentIQ Works</h2>
-          </div>
-          
-          <div className="relative flex flex-col md:flex-row items-center justify-between gap-6 md:gap-2">
-            {/* Connecting Line (hidden on mobile) */}
-            <div className="hidden md:block absolute top-[24px] left-8 right-8 h-[2px] bg-gradient-to-r from-blue-100 via-blue-500 to-blue-100 dark:from-blue-900/30 dark:via-blue-500/50 dark:to-blue-900/30 z-0"></div>
+        {/* Problem & Audience Section */}
+        <section className="border-t border-gray-200 dark:border-gray-800 py-20 px-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
+            <div className="lg:col-span-1">
+              <h2 className="text-[11px] font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-widest mb-3">Audience & Focus</h2>
+              <h3 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-4">Built for Early-Stage Inventors</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
+                PatentIQ helps researchers, students, and early-stage innovators assess their concepts before commissioning expensive legal evaluations. Our goal is to ground every AI insight in actual prior-art database evidence.
+              </p>
+            </div>
             
-            {[
-              { icon: <FileText size={20} />, label: "Upload Project" },
-              { icon: <Brain size={20} />, label: "AI Understands Project" },
-              { icon: <FileSearch size={20} />, label: "Extract Innovation" },
-              { icon: <Database size={20} />, label: "Agentic RAG retrieves relevant patents" },
-              { icon: <Search size={20} />, label: "Semantic Comparison" },
-              { icon: <BarChart2 size={20} />, label: "Novelty Evaluation" },
-              { icon: <Check size={20} />, label: "Patent Potential Score" },
-              { icon: <Sparkles size={20} />, label: "AI Recommendations" },
-              { icon: <CheckCircle2 size={20} />, label: "Download Patent Potential Report" }
-            ].map((step, index) => (
-              <div key={index} className="relative z-10 flex flex-col items-center gap-4 w-full md:w-auto group">
-                <div className="w-12 h-12 bg-white dark:bg-[#111522] border-2 border-blue-100 dark:border-blue-900/50 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-md shadow-blue-500/10 group-hover:scale-110 group-hover:border-blue-500 group-hover:text-blue-500 transition-all duration-300">
-                  {step.icon}
+            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white dark:bg-[#0a0f1c] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl">
+                <Compass className="text-cyan-500 mb-4" size={24} />
+                <h4 className="font-bold text-gray-900 dark:text-white mb-2">Pre-Filing Guidance</h4>
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                  Understand whether your tech has unique components or broad overlap with existing publications before committing capital.
+                </p>
+              </div>
+              <div className="bg-white dark:bg-[#0a0f1c] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl">
+                <FileSearch2 className="text-cyan-500 mb-4" size={24} />
+                <h4 className="font-bold text-gray-900 dark:text-white mb-2">Research Grounding</h4>
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                  Instead of guessing, evaluate how your technical features correspond directly to database citations.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* How It Works Flow Chart */}
+        <section id="how-it-works" className="border-t border-gray-200 dark:border-gray-800 bg-white/30 dark:bg-[#070b13]/40 py-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-[11px] font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-widest mb-3">Structured RAG Pipeline</h2>
+              <h3 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">The Core Processing Pipeline</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 relative">
+              {[
+                { step: "01", title: "Idea / Doc Upload", desc: "Submit project description or upload PDF/DOCX/TXT files." },
+                { step: "02", title: "Structured Feature Parse", desc: "AI decomposes text into traceable key technical features." },
+                { step: "03", title: "Hybrid Search & RRF", desc: "BM25 lexical + Qdrant BGE semantic search matches prior art, fused via RRF." },
+                { step: "04", title: "Feature-Evidence Mapping", desc: "Verbatim evidence items are programmatically mapped to specific features." },
+                { step: "05", title: "Readiness Assessment", desc: "Calculates scores mathematically; Gemini explains the structured findings." }
+              ].map((flow, i) => (
+                <div key={i} className="bg-white dark:bg-[#0a0f1c] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 flex flex-col relative">
+                  <span className="text-3xl font-black text-gray-200 dark:text-gray-800/80 mb-4 font-mono">{flow.step}</span>
+                  <h4 className="font-bold text-gray-900 dark:text-white mb-2 text-sm">{flow.title}</h4>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed flex-1">{flow.desc}</p>
+                  {i < 4 && (
+                    <div className="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2 z-10 text-gray-300 dark:text-gray-700">
+                      <ChevronRight size={20} />
+                    </div>
+                  )}
                 </div>
-                <div className="text-[11px] font-bold text-gray-700 dark:text-gray-300 text-center w-24 leading-snug">
-                  {step.label}
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Feature-Evidence Mapping (Core Contribution) */}
+        <section className="border-t border-gray-200 dark:border-gray-800 py-20 px-6 max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            <div className="lg:w-1/2 space-y-6">
+              <span className="text-[11px] font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-widest">Research Contribution</span>
+              <h3 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-tight">Feature-to-Evidence Mapping</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
+                PatentIQ breaks away from simple black-box LLM analysis. Our system isolates individual claims/features, matches them to specific sentences inside retrieved patents, and calculates evidence strength independently of retrieval similarity.
+              </p>
+              
+              <div className="space-y-4">
+                <div className="flex gap-4">
+                  <div className="w-8 h-8 rounded-lg bg-cyan-100 dark:bg-cyan-950/50 flex items-center justify-center shrink-0 text-cyan-600 dark:text-cyan-400">
+                    <GitBranch size={16} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 dark:text-white text-sm">Fine-Grained Mapping</h4>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      See exactly which claims have strong, weak, or zero matching prior art.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-8 h-8 rounded-lg bg-cyan-100 dark:bg-cyan-950/50 flex items-center justify-center shrink-0 text-cyan-600 dark:text-cyan-400">
+                    <FileCheck2 size={16} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 dark:text-white text-sm">Negative Evidence Tracking</h4>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Highlights contradicting prior art or conflicting disclosures to pinpoint risks.
+                    </p>
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Features Section */}
-        <section id="features" className="w-full max-w-7xl mx-auto px-8 py-16 lg:py-20">
-          <div className="text-center mb-16 lg:mb-20">
-            <h2 className="text-[28px] lg:text-[36px] font-extrabold text-gray-900 dark:text-white mb-4 tracking-[-0.02em] leading-tight">Powerful Features for Patent Excellence</h2>
-            <p className="text-[14px] text-gray-600 dark:text-gray-400 font-medium leading-[1.8] max-w-2xl mx-auto">Built for innovators, researchers, and IP professionals who demand precision.</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            
-            <div className="bg-white dark:bg-[#111522] border border-gray-100 dark:border-gray-800/60 p-8 rounded-[2rem] shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-              <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-blue-600/20 group-hover:scale-110 transition-transform duration-300">
-                <FileText size={24} />
-              </div>
-              <h3 className="text-[18px] font-bold text-blue-600 dark:text-blue-500 mb-3 leading-[1.3] tracking-tight">Upload Project</h3>
-              <p className="text-[13px] text-gray-600 dark:text-gray-400 leading-[1.8] relative z-10 flex-1 pr-2">Securely upload your project report, research paper, or technical documentation in multiple formats.</p>
-              <div className="absolute -bottom-8 -right-4 text-[100px] font-black text-gray-50 dark:text-gray-800/20 select-none z-0 group-hover:text-blue-50 dark:group-hover:text-blue-900/10 transition-colors duration-300">01</div>
             </div>
 
-            <div className="bg-white dark:bg-[#111522] border border-gray-100 dark:border-gray-800/60 p-8 rounded-[2rem] shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-              <div className="w-12 h-12 bg-cyan-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-cyan-600/20 group-hover:scale-110 transition-transform duration-300">
-                <Brain size={24} />
+            {/* Simulated Mapping Visualization */}
+            <div className="lg:w-1/2 w-full bg-white dark:bg-[#0a0f1c] border border-gray-200 dark:border-gray-800 rounded-3xl p-6 font-mono text-xs shadow-sm">
+              <div className="border-b border-gray-150 dark:border-gray-800 pb-3 mb-4 flex justify-between items-center text-gray-400">
+                <span>FEATURE_EVIDENCE_MAPPER</span>
+                <span className="text-emerald-500 font-bold">STATUS: RUNNING</span>
               </div>
-              <h3 className="text-[18px] font-bold text-cyan-600 dark:text-cyan-500 mb-3 leading-[1.3] tracking-tight">AI Project<br/>Understanding</h3>
-              <p className="text-[13px] text-gray-600 dark:text-gray-400 leading-[1.8] relative z-10 flex-1 pr-2">Advanced LLMs read and comprehend your complex technical documents just like an expert consultant.</p>
-              <div className="absolute -bottom-8 -right-4 text-[100px] font-black text-gray-50 dark:text-gray-800/20 select-none z-0 group-hover:text-cyan-50 dark:group-hover:text-cyan-900/10 transition-colors duration-300">02</div>
-            </div>
+              <div className="space-y-4">
+                <div className="p-3 bg-slate-50 dark:bg-[#111624] border border-gray-200 dark:border-gray-800 rounded-lg">
+                  <div className="font-bold text-cyan-600 dark:text-cyan-400 mb-1">FEAT-001: Distributed Torque Balancer</div>
+                  <div className="text-gray-400 dark:text-gray-500 mb-2">Category: Propulsion  |  Weight: High</div>
+                  <div className="pl-3 border-l-2 border-emerald-500 text-gray-600 dark:text-gray-300">
+                    → Matched US-10492-B2 "Rotor Control System"
+                    <br/>
+                    <span className="text-[10px] text-gray-400 font-medium">Similarity: 0.88  |  Strength: 0.82 (Supporting)</span>
+                  </div>
+                </div>
 
-            <div className="bg-white dark:bg-[#111522] border border-gray-100 dark:border-gray-800/60 p-8 rounded-[2rem] shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-              <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-indigo-600/20 group-hover:scale-110 transition-transform duration-300">
-                <FileSearch size={24} />
+                <div className="p-3 bg-slate-50 dark:bg-[#111624] border border-gray-200 dark:border-gray-800 rounded-lg">
+                  <div className="font-bold text-cyan-600 dark:text-cyan-400 mb-1">FEAT-002: Optoelectronic feedback loop</div>
+                  <div className="text-gray-400 dark:text-gray-500 mb-2">Category: Sensing  |  Weight: Med</div>
+                  <div className="pl-3 border-l-2 border-gray-300 dark:border-gray-700 text-gray-400 dark:text-gray-500">
+                    → No strong prior art matches found.
+                    <br/>
+                    <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 uppercase">High Differentiation Signal</span>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-[18px] font-bold text-indigo-600 dark:text-indigo-400 mb-3 leading-[1.3] tracking-tight">Innovation<br/>Extraction</h3>
-              <p className="text-[13px] text-gray-600 dark:text-gray-400 leading-[1.8] relative z-10 flex-1 pr-2">Automatically identifies and isolates the core novel ideas and technical methodologies within your work.</p>
-              <div className="absolute -bottom-8 -right-4 text-[100px] font-black text-gray-50 dark:text-gray-800/20 select-none z-0 group-hover:text-indigo-50 dark:group-hover:text-indigo-900/10 transition-colors duration-300">03</div>
-            </div>
-            
-            <div className="bg-white dark:bg-[#111522] border border-gray-100 dark:border-gray-800/60 p-8 rounded-[2rem] shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-              <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-emerald-600/20 group-hover:scale-110 transition-transform duration-300">
-                <Database size={24} />
-              </div>
-              <h3 className="text-[18px] font-bold text-emerald-600 dark:text-emerald-500 mb-3 leading-[1.3] tracking-tight">Agentic RAG<br/>Retrieval</h3>
-              <p className="text-[13px] text-gray-600 dark:text-gray-400 leading-[1.8] relative z-10 flex-1 pr-2">Autonomous agents retrieve the most relevant existing patents from global databases based on your innovation.</p>
-              <div className="absolute -bottom-8 -right-4 text-[100px] font-black text-gray-50 dark:text-gray-800/20 select-none z-0 group-hover:text-emerald-50 dark:group-hover:text-emerald-900/10 transition-colors duration-300">04</div>
-            </div>
-            
-            <div className="bg-white dark:bg-[#111522] border border-gray-100 dark:border-gray-800/60 p-8 rounded-[2rem] shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-              <div className="w-12 h-12 bg-teal-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-teal-500/20 group-hover:scale-110 transition-transform duration-300">
-                <Search size={24} />
-              </div>
-              <h3 className="text-[18px] font-bold text-teal-600 dark:text-teal-400 mb-3 leading-[1.3] tracking-tight">Semantic Patent<br/>Comparison</h3>
-              <p className="text-[13px] text-gray-600 dark:text-gray-400 leading-[1.8] relative z-10 flex-1 pr-2">Deep semantic comparison between your project features and existing patents to uncover true similarities.</p>
-              <div className="absolute -bottom-8 -right-4 text-[100px] font-black text-gray-50 dark:text-gray-800/20 select-none z-0 group-hover:text-teal-50 dark:group-hover:text-teal-900/10 transition-colors duration-300">05</div>
-            </div>
-            
-            <div className="bg-white dark:bg-[#111522] border border-gray-100 dark:border-gray-800/60 p-8 rounded-[2rem] shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-              <div className="w-12 h-12 bg-purple-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-purple-500/20 group-hover:scale-110 transition-transform duration-300">
-                <BarChart2 size={24} />
-              </div>
-              <h3 className="text-[18px] font-bold text-purple-600 dark:text-purple-400 mb-3 leading-[1.3] tracking-tight">Patent Potential<br/>Analysis</h3>
-              <p className="text-[13px] text-gray-600 dark:text-gray-400 leading-[1.8] relative z-10 flex-1 pr-2">Quantify your project's patent potential with our proprietary scoring algorithm and understand exactly what makes it unique.</p>
-              <div className="absolute -bottom-8 -right-4 text-[100px] font-black text-gray-50 dark:text-gray-800/20 select-none z-0 group-hover:text-purple-50 dark:group-hover:text-purple-900/10 transition-colors duration-300">06</div>
-            </div>
-
-            <div className="bg-white dark:bg-[#111522] border border-gray-100 dark:border-gray-800/60 p-8 rounded-[2rem] shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-              <div className="w-12 h-12 bg-rose-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-rose-500/20 group-hover:scale-110 transition-transform duration-300">
-                <Sparkles size={24} />
-              </div>
-              <h3 className="text-[18px] font-bold text-rose-500 dark:text-rose-400 mb-3 leading-[1.3] tracking-tight">AI Improvement<br/>Recommendations</h3>
-              <p className="text-[13px] text-gray-600 dark:text-gray-400 leading-[1.8] relative z-10 flex-1 pr-2">Receive actionable advice on how to tweak your project to increase its likelihood of patent success.</p>
-              <div className="absolute -bottom-8 -right-4 text-[100px] font-black text-gray-50 dark:text-gray-800/20 select-none z-0 group-hover:text-rose-50 dark:group-hover:text-rose-900/10 transition-colors duration-300">07</div>
-            </div>
-            
-            <div className="bg-white dark:bg-[#111522] border border-gray-100 dark:border-gray-800/60 p-8 rounded-[2rem] shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-              <div className="w-12 h-12 bg-orange-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-transform duration-300">
-                <CheckCircle2 size={24} />
-              </div>
-              <h3 className="text-[18px] font-bold text-orange-500 dark:text-orange-400 mb-3 leading-[1.3] tracking-tight">Professional Report<br/>Generation</h3>
-              <p className="text-[13px] text-gray-600 dark:text-gray-400 leading-[1.8] relative z-10 flex-1 pr-2">Generate comprehensive Patent Potential Reports to share with stakeholders or IP attorneys before filing.</p>
-              <div className="absolute -bottom-8 -right-4 text-[100px] font-black text-gray-50 dark:text-gray-800/20 select-none z-0 group-hover:text-orange-50 dark:group-hover:text-orange-900/10 transition-colors duration-300">08</div>
-            </div>
-
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section id="technology" className="w-full max-w-7xl mx-auto px-8 py-10 mb-20">
-          <div className="bg-[#f4f7ff] dark:bg-[#111624] border border-blue-100/50 dark:border-blue-900/30 rounded-[2rem] p-10 md:p-14 flex flex-col lg:flex-row items-center justify-between gap-10 relative overflow-hidden">
-            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02] pointer-events-none" style={{backgroundImage: 'radial-gradient(#000 2px, transparent 2px)', backgroundSize: '30px 30px'}}></div>
-            
-            <div className="flex items-center gap-8 relative z-10 w-full lg:w-auto">
-              <div className="hidden md:flex shrink-0 transform -rotate-12">
-                <Rocket size={64} strokeWidth={1.5} className="text-blue-600 dark:text-blue-500 drop-shadow-xl" />
-              </div>
-              <div className="text-center md:text-left">
-                <h2 className="text-[28px] lg:text-[32px] font-extrabold text-gray-900 dark:text-white mb-4 tracking-[-0.02em] leading-tight">Ready to evaluate your project's patent potential?</h2>
-                <p className="text-[14px] text-gray-600 dark:text-gray-400 leading-[1.8] font-medium max-w-lg">Upload your project report and receive AI-powered novelty analysis, semantic patent comparisons, and a professional patent potential report within minutes.</p>
-              </div>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row items-center gap-4 relative z-10 shrink-0 w-full lg:w-auto">
-              <Link to="/register" className="w-full sm:w-auto text-center bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl font-bold transition-colors shadow-lg shadow-blue-600/20 text-[14px]">
-                Get Started Free
-              </Link>
-              <button id="demo" className="w-full sm:w-auto text-center bg-white dark:bg-[#151a28] border-2 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-900 dark:text-white px-8 py-3.5 rounded-xl font-bold transition-colors shadow-sm text-[14px]">
-                Request a Demo
-              </button>
             </div>
           </div>
         </section>
 
+        {/* Readiness Dashboard Engine (6 Dimensions) */}
+        <section className="border-t border-gray-200 dark:border-gray-800 bg-white/30 dark:bg-[#070b13]/40 py-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-[11px] font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-widest mb-3">Six Multi-Dimensional Metrics</h2>
+              <h3 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Level-2 Patent Readiness Assessment</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { title: "Novelty", type: "Algorithmic", desc: "Calculated based on feature-level coverage and collective prior art overlaps, avoiding simple max similarity loops." },
+                { title: "Prior-Art Overlap", type: "Algorithmic", desc: "Calculates the overall density and strength of patent chunks directly related to your claim statements." },
+                { title: "Technical Differentiation", type: "Algorithmic", desc: "Tracks the ratio of high-importance technical features which remain entirely unaddressed by existing patents." },
+                { title: "Documentation Quality", type: "Algorithmic", desc: "Evaluates the completeness, technical category specificity, and structural density of your source write-up." },
+                { title: "Innovation Characteristics", type: "Qualitative", desc: "Qualitative evidence-supported assessment highlighting structural differences and design categories." },
+                { title: "Commercial Potential", type: "Qualitative", desc: "Qualitative analysis outlining technical domains and market readiness with local confidence ratings." }
+              ].map((dim, i) => (
+                <div key={i} className="bg-white dark:bg-[#0a0f1c] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl relative flex flex-col">
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="font-bold text-gray-900 dark:text-white">{dim.title}</h4>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${dim.type === 'Algorithmic' ? 'bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400' : 'bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400'}`}>
+                      {dim.type}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed flex-1">{dim.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Disclaimer CTA Section */}
+        <section className="border-t border-gray-200 dark:border-gray-800 py-20 px-6 max-w-4xl mx-auto text-center">
+          <div className="bg-red-50/50 dark:bg-red-950/10 border border-red-200/50 dark:border-red-900/20 p-8 rounded-3xl mb-12 text-left flex flex-col md:flex-row gap-6 items-start">
+            <ShieldAlert className="text-red-500 shrink-0 mt-1" size={24} />
+            <div>
+              <h4 className="font-bold text-red-950 dark:text-red-400 text-sm mb-2">Important Legal Notice</h4>
+              <p className="text-xs text-red-800/80 dark:text-red-400/80 leading-relaxed font-medium">
+                PatentIQ is designed solely as an early-stage planning and research tool to help innovators evaluate their technical developments. It does not search exhaustive legal indexes, guarantees nothing regarding patent grant success, and must not replace professional analysis by licensed patent attorneys.
+              </p>
+            </div>
+          </div>
+
+          <h3 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6 tracking-tight">Evaluate your technology with evidence</h3>
+          <Link 
+            to="/register" 
+            className="inline-flex bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-black px-8 py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-cyan-600/10 dark:shadow-[0_0_20px_rgba(34,211,238,0.2)] hover:-translate-y-0.5 text-sm"
+          >
+            Start Assessing
+          </Link>
+        </section>
       </main>
-      
+
       {/* Footer */}
-      <footer id="resources" className="border-t border-gray-100 dark:border-gray-800/50 py-12 w-full">
-        <div className="max-w-7xl mx-auto px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center">
-            <span className="text-[16px] font-black tracking-tighter text-gray-900 dark:text-white">
-              Patent<span className="text-blue-600 dark:text-blue-500">IQ</span>
+      <footer className="border-t border-gray-200 dark:border-gray-800 py-12 px-6 bg-white dark:bg-[#040810] transition-colors duration-300">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-1.5">
+            <span className="text-md font-black tracking-tighter text-gray-900 dark:text-white">
+              Patent<span className="text-cyan-600 dark:text-cyan-400">IQ</span>
             </span>
           </div>
-          
-          <div className="flex flex-wrap items-center justify-center gap-8 text-[13px] font-medium text-gray-500 dark:text-gray-400">
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">About</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">Documentation</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">Contact</a>
-          </div>
-
-          <div className="text-[12px] text-gray-400 dark:text-gray-500 font-medium">
-            &copy; 2026 PatentIQ
+          <div className="text-xs text-gray-400 dark:text-gray-500">
+            &copy; 2026 PatentIQ. Built for explainable, evidence-based early assessment.
           </div>
         </div>
       </footer>
@@ -260,3 +289,4 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+

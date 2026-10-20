@@ -1,0 +1,50 @@
+{
+  "manifest_version": "1.0.0",
+  "created_at": "2026-10-16T05:32:15.881663+00:00",
+  "source": {
+    "source_filename": "ipg161011.xml",
+    "source_filepath": "C:\\Users\\karrt\\Downloads\\archive (8)\\ipg161011.xml",
+    "source_size_bytes": 596450131,
+    "source_size_mb": 568.82,
+    "uspto_release_date": "2016-10-11",
+    "uspto_dtd_version": "v4.5 2014-04-03"
+  },
+  "statistics": {
+    "records_scanned": 725,
+    "records_extracted": 100,
+    "duplicate_count": 0,
+    "xml_parse_errors": 0,
+    "missing_field_counts": {
+      "title": 0,
+      "abstract": 0,
+      "claims": 0,
+      "description": 0,
+      "inventors": 0,
+      "assignee": 0,
+      "cpc_classes": 0,
+      "ipc_classes": 0,
+      "filing_date": 0,
+      "publication_date": 0
+    }
+  },
+  "outputs": [
+    {
+      "filename": "real_patents_pilot_raw.jsonl",
+      "path": "C:\\Users\\karrt\\Downloads\\PatentIQ\\data\\real_patents_pilot\\real_patents_pilot_raw.jsonl",
+      "record_count": 100,
+      "file_size_bytes": 6546933,
+      "file_size_mb": 6.24,
+      "sha256": "969d3ed4da0743e221aafb7eccc459ea70ccede9345d8737ce2b829d38ccede1",
+      "description": "Full verbatim extracted records including raw claims list and complete specification description"
+    },
+    {
+      "filename": "real_patents_pilot_ingest.jsonl",
+      "path": "C:\\Users\\karrt\\Downloads\\PatentIQ\\data\\real_patents_pilot\\real_patents_pilot_ingest.jsonl",
+      "record_count": 100,
+      "file_size_bytes": 6546933,
+      "file_size_mb": 6.24,
+      "sha256": "969d3ed4da0743e221aafb7eccc459ea70ccede9345d8737ce2b829d38ccede1",
+      "description": "PatentDocumentBase schema-compliant records ready for chunking and prior-art indexing"
+    }
+  ]
+}

@@ -141,3 +141,22 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# SQLite Durable Storage
+*.db
+*.db-wal
+*.db-shm
+data/patentiq_local.db
+
+*.sqlite
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+~$*
+backend/uploads/
+*.lock

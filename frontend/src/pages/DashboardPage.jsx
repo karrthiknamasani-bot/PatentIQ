@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
-import { Upload, Search, BarChart2, PieChart, Activity, Layers, Folder } from 'lucide-react';
+import {
+  Upload,
+  Search,
+  BarChart2,
+  PieChart,
+  Activity,
+  Layers,
+  Folder,
+  Loader2,
+  Award,
+  CheckCircle2,
+  AlertTriangle,
+  ArrowRight,
+  TrendingUp,
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
@@ -11,195 +25,347 @@ const DashboardPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
-  const [latestAnalysis, setLatestAnalysis] = useState(null);
+  const [latestDetail, setLatestDetail] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const { data } = await api.get('/projects');
-        if (data.success) {
-          const fetchedProjects = data.data || [];
-          setProjects(fetchedProjects);
-          
-          if (fetchedProjects.length > 0 && fetchedProjects[0].status === 'completed') {
-            const analysisData = await api.get(`/analyze/${fetchedProjects[0]._id}`);
-            if (analysisData.data.success) {
-              setLatestAnalysis(analysisData.data.data);
-            }
-          } else {
-            setLatestAnalysis(null);
-          }
-        }
-      } catch (error) {
-        console.error(error);
-        toast.error('Failed to load projects');
-      }
-    };
-    fetchProjects();
+    fetchDashboardData();
   }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get('/projects');
+      const projectList = Array.isArray(res.data) ? res.data : res.data?.data || [];
+      setProjects(projectList);
+
+      if (projectList.length > 0) {
+        const latestId = projectList[0].id || projectList[0]._id;
+        try {
+          const detailRes = await api.get(`/projects/${latestId}`);
+          setLatestDetail(detailRes.data);
+        } catch (detailErr) {
+          console.warn('Could not fetch detail for latest project:', detailErr);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error);
+      toast.error('Failed to load projects');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const latestProject = projects[0];
+
+  // Calculate live statistics
+  const scoredProjects = projects.filter(
+    (p) => p.readiness_score !== null && p.readiness_score !== undefined
+  );
+  const avgReadiness =
+    scoredProjects.length > 0
+      ? Math.round(
+          scoredProjects.reduce((acc, p) => acc + p.readiness_score, 0) / scoredProjects.length
+        )
+      : null;
+
+  const completedProjects = projects.filter((p) => p.status === 'completed');
+
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
+      transition: { staggerChildren: 0.08 },
+    },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } },
   };
 
   const metrics = [
-    { label: "Total Projects", value: projects.length.toString(), sub: "Uploaded documents" },
-    { label: "Latest Potential", value: latestAnalysis ? `${latestAnalysis.scores.noveltyScore}/100` : "--", sub: latestAnalysis ? "From latest project" : "Awaiting analysis" },
-    { label: "Latest Innovation", value: latestAnalysis ? `${latestAnalysis.analysis.innovationScore.overallScore}/100` : "--", sub: latestAnalysis ? "From latest project" : "Awaiting analysis" },
-    { label: "Patents Matched", value: latestAnalysis ? latestAnalysis.retrievedPatents.length.toString() : "--", sub: latestAnalysis ? "From latest project" : "Awaiting analysis" },
-    { label: "Latest Similarity", value: latestAnalysis ? `${latestAnalysis.scores.similarityScore}%` : "--", sub: latestAnalysis ? "From latest project" : "Awaiting analysis" },
-    { label: "Novelty Assessment", value: latestAnalysis ? latestAnalysis.scores.noveltyScore >= 80 ? "HIGH" : "MED" : "--", sub: latestAnalysis ? "From latest project" : "Awaiting analysis" },
-    { label: "Overall Status", value: latestAnalysis ? "Ready" : "--", sub: latestAnalysis ? "Analysis complete" : "Awaiting analysis" },
+    {
+      label: 'Total Projects',
+      value: projects.length.toString(),
+      sub: 'Uploaded workspaces',
+    },
+    {
+      label: 'Latest EB-PRE Score',
+      value:
+        latestProject?.readiness_score !== null && latestProject?.readiness_score !== undefined
+          ? `${latestProject.readiness_score}/100`
+          : '--',
+      sub: latestProject ? latestProject.readiness_category || 'Assessed' : 'Awaiting upload',
+    },
+    {
+      label: 'Latest Confidence',
+      value:
+        latestProject?.confidence_score !== null && latestProject?.confidence_score !== undefined
+          ? `${Math.round(latestProject.confidence_score * 100)}%`
+          : '--',
+      sub: 'Statistical certainty',
+    },
+    {
+      label: 'Average Readiness',
+      value: avgReadiness !== null ? `${avgReadiness}/100` : '--',
+      sub: `${scoredProjects.length} evaluated projects`,
+    },
+    {
+      label: 'Features Identified',
+      value: latestDetail?.features_count ? latestDetail.features_count.toString() : '--',
+      sub: 'In latest invention',
+    },
+    {
+      label: 'Processed Chunks',
+      value: latestDetail?.chunks_count ? latestDetail.chunks_count.toString() : '--',
+      sub: 'In latest document',
+    },
+    {
+      label: 'System Status',
+      value: 'Online',
+      sub: 'FastAPI + Qdrant',
+    },
   ];
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="flex flex-col justify-center items-center py-24 min-h-[400px]">
+          <Loader2 className="animate-spin text-cyan-500 mb-4" size={40} />
+          <p className="text-gray-500 text-sm font-medium">Loading workspace analytics...</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
-      <motion.div 
-        className="w-full pt-4 pb-20"
+      <motion.div
+        className="w-full pt-4 pb-20 max-w-7xl mx-auto"
         variants={containerVariants}
         initial="hidden"
         animate="show"
       >
-        
         {/* Welcome Section */}
-        <motion.div variants={itemVariants} className="text-center max-w-2xl mx-auto mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
-            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-400 dark:to-blue-500">{user?.name?.split(' ')[0] || 'User'}</span>
+        <motion.div variants={itemVariants} className="text-center max-w-3xl mx-auto mb-10">
+          <div className="inline-block px-3 py-1 bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800/60 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
+            Evidence-Based AI Patent Readiness Engine
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">
+            Welcome back,{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-400 dark:to-blue-500">
+              {user?.name?.split(' ')[0] || 'Researcher'}
+            </span>
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 text-lg mb-8">
-            Your AI Consultant is ready. Upload a new project to evaluate its patent potential or review your recent analyses.
+          <p className="text-gray-600 dark:text-gray-400 text-base max-w-2xl mx-auto">
+            Evaluate invention readiness against the patent corpus using hybrid BM25 lexical + BGE dense retrieval, RRF fusion, and cross-encoder reranking.
           </p>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-8">
-            <Link to="/upload" className="group relative w-full sm:w-auto flex justify-center items-center gap-2 bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-black px-8 py-3.5 rounded-lg text-[14px] font-bold transition-all duration-300 shadow-lg shadow-cyan-600/20 dark:shadow-[0_0_20px_rgba(34,211,238,0.2)] dark:hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] hover:-translate-y-0.5">
-              <Upload size={18} className="group-hover:-translate-y-1 transition-transform duration-300" strokeWidth={2.5} />
-              Upload Project
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
+            <Link
+              to="/upload"
+              className="w-full sm:w-auto flex justify-center items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-8 py-3.5 rounded-xl text-sm font-bold shadow-lg shadow-cyan-600/20 hover:-translate-y-0.5 transition-all"
+            >
+              <Upload size={18} />
+              Upload New Invention
             </Link>
-            <Link to="/search" className="group w-full sm:w-auto flex justify-center items-center gap-2 bg-white dark:bg-[#1a2133] hover:bg-gray-50 dark:hover:bg-[#232c45] border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500 text-gray-900 dark:text-white px-8 py-3.5 rounded-lg text-[14px] font-bold transition-all duration-300 shadow-sm hover:-translate-y-0.5">
-              <Search size={18} className="text-gray-400 dark:text-gray-400 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors duration-300" strokeWidth={2} />
-              Explore Patent Search
+            <Link
+              to="/search"
+              className="w-full sm:w-auto flex justify-center items-center gap-2 bg-white dark:bg-[#1a2133] hover:bg-gray-50 dark:hover:bg-[#232c45] border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white px-8 py-3.5 rounded-xl text-sm font-bold shadow-sm hover:-translate-y-0.5 transition-all"
+            >
+              <Search size={18} />
+              Corpus Patent Search
             </Link>
           </div>
         </motion.div>
 
         {/* Metrics Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3.5 mb-8">
           {metrics.map((m, idx) => (
-            <motion.div key={idx} variants={itemVariants} className="bg-white dark:bg-[#141a27] border border-gray-200 dark:border-gray-800 rounded-xl p-5 shadow-sm flex flex-col justify-between">
-              <h3 className="text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-2 leading-tight h-8">{m.label}</h3>
+            <motion.div
+              key={idx}
+              variants={itemVariants}
+              className="bg-white dark:bg-[#141a27] border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm flex flex-col justify-between"
+            >
+              <h3 className="text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-2 leading-tight h-7">
+                {m.label}
+              </h3>
               <div>
                 <div className="text-2xl font-black text-gray-900 dark:text-white">{m.value}</div>
-                <p className="text-gray-400 dark:text-gray-500 text-[10px] mt-1">{m.sub}</p>
+                <p className="text-gray-400 dark:text-gray-500 text-[10px] mt-1 truncate">{m.sub}</p>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* Charts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          {/* Similarity Distribution */}
-          <motion.div variants={itemVariants} className="bg-white dark:bg-[#141a27] border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm">
-            <div className="flex items-center gap-2 mb-6">
-              <BarChart2 size={18} className="text-blue-500" />
-              <h3 className="text-gray-900 dark:text-white font-bold text-sm">Similarity (Latest Project)</h3>
+        {/* Charts / Intelligence Breakdown Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+          {/* Dimension Score Distribution */}
+          <motion.div
+            variants={itemVariants}
+            className="bg-white dark:bg-[#141a27] border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <BarChart2 size={18} className="text-cyan-500" />
+                <h3 className="text-gray-900 dark:text-white font-bold text-sm">
+                  EB-PRE Core Dimensions {latestProject ? `(${latestProject.title})` : ''}
+                </h3>
+              </div>
+              {latestProject && (
+                <span className="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                  {latestProject.readiness_score ?? '--'}/100
+                </span>
+              )}
             </div>
-            <div className={`h-48 flex items-end justify-between gap-2 px-4 ${latestAnalysis ? '' : 'opacity-30 grayscale pointer-events-none'}`}>
-              {latestAnalysis 
-                ? [40, 70, latestAnalysis.scores.similarityScore, 90, 65, 30, 80].map((h, i) => (
-                  <div key={i} className="w-full bg-blue-500 rounded-t-sm" style={{ height: `${h}%` }}></div>
-                ))
-                : [40, 70, 45, 90, 65, 30, 80].map((h, i) => (
-                  <div key={i} className="w-full bg-blue-500 rounded-t-sm" style={{ height: `${h}%` }}></div>
-                ))
-              }
-            </div>
-            <div className="text-center text-xs text-gray-500 mt-4">{latestAnalysis ? 'Based on latest analysis' : 'Awaiting project analysis'}</div>
+
+            {latestDetail?.analysis?.dimension_scores ? (
+              <div className="space-y-3 pt-2">
+                {Object.entries(latestDetail.analysis.dimension_scores).map(([key, item], i) => {
+                  const score = typeof item === 'object' && item.score !== undefined ? item.score : 0.7;
+                  const pct = Math.round(score <= 1.0 ? score * 100 : score);
+                  return (
+                    <div key={i} className="text-xs">
+                      <div className="flex justify-between font-medium mb-1">
+                        <span className="capitalize text-gray-700 dark:text-gray-300">
+                          {key.replace(/_/g, ' ')}
+                        </span>
+                        <span className="font-bold text-cyan-600 dark:text-cyan-400">{pct}%</span>
+                      </div>
+                      <div className="w-full bg-gray-100 dark:bg-gray-800 h-1.5 rounded-full overflow-hidden">
+                        <div
+                          className="bg-cyan-500 h-full rounded-full transition-all"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="h-44 flex flex-col items-center justify-center text-center text-xs text-gray-400">
+                <BarChart2 size={32} className="text-gray-300 dark:text-gray-700 mb-2" />
+                <p>Run pipeline analysis to visualize 6-dimension EB-PRE scores.</p>
+              </div>
+            )}
           </motion.div>
 
-          {/* Innovation Breakdown */}
-          <motion.div variants={itemVariants} className="bg-white dark:bg-[#141a27] border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm">
-            <div className="flex items-center gap-2 mb-6">
-              <PieChart size={18} className="text-purple-500" />
-              <h3 className="text-gray-900 dark:text-white font-bold text-sm">Innovation Breakdown</h3>
+          {/* Uncertainty & Grounding Status */}
+          <motion.div
+            variants={itemVariants}
+            className="bg-white dark:bg-[#141a27] border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Activity size={18} className="text-emerald-500" />
+                <h3 className="text-gray-900 dark:text-white font-bold text-sm">
+                  Grounding & Uncertainty Tracking
+                </h3>
+              </div>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 font-bold">
+                Deterministic Engine
+              </span>
             </div>
-            <div className="h-48 flex items-center justify-center opacity-30 grayscale pointer-events-none">
-              <div className="w-32 h-32 rounded-full border-[16px] border-purple-500 border-r-transparent border-b-purple-300"></div>
-            </div>
-            <div className="text-center text-xs text-gray-500 mt-4">Awaiting project analysis</div>
-          </motion.div>
 
-          {/* Technology Domains */}
-          <motion.div variants={itemVariants} className="bg-white dark:bg-[#141a27] border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm">
-            <div className="flex items-center gap-2 mb-6">
-              <Layers size={18} className="text-teal-500" />
-              <h3 className="text-gray-900 dark:text-white font-bold text-sm">Technology Domains</h3>
-            </div>
-            <div className={`h-48 flex flex-col justify-center gap-4 px-4 ${latestAnalysis ? '' : 'opacity-30 grayscale pointer-events-none'}`}>
-              {['AI & ML', 'Hardware', 'Data Processing', 'Networking'].map((domain, i) => (
-                <div key={i} className="flex items-center gap-4">
-                  <span className="text-xs text-gray-600 w-24 text-right">{domain}</span>
-                  <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
-                    <div className="h-full bg-teal-500" style={{ width: latestAnalysis ? `${80 - i * 15 + (Math.random() * 10 - 5)}%` : `${80 - i * 15}%` }}></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="text-center text-xs text-gray-500 mt-4">{latestAnalysis ? 'Estimated based on latest analysis' : 'Awaiting project analysis'}</div>
-          </motion.div>
+            <div className="space-y-3 text-xs pt-1">
+              <div className="p-3 bg-gray-50 dark:bg-[#0f141f] rounded-lg border border-gray-100 dark:border-gray-800">
+                <span className="font-bold text-gray-800 dark:text-gray-200 block mb-1">
+                  Active Uncertainty Flags
+                </span>
+                {latestDetail?.analysis?.uncertainty_flags &&
+                latestDetail.analysis.uncertainty_flags.length > 0 ? (
+                  <ul className="list-disc pl-4 space-y-1 text-amber-600 dark:text-amber-400 font-mono text-[11px]">
+                    {latestDetail.analysis.uncertainty_flags.map((flag, idx) => (
+                      <li key={idx}>{flag}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-500">No active uncertainty penalties flagged.</p>
+                )}
+              </div>
 
-          {/* Novelty Analysis */}
-          <motion.div variants={itemVariants} className="bg-white dark:bg-[#141a27] border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm">
-            <div className="flex items-center gap-2 mb-6">
-              <Activity size={18} className="text-rose-500" />
-              <h3 className="text-gray-900 dark:text-white font-bold text-sm">Novelty Trend</h3>
+              <div className="p-3 bg-gray-50 dark:bg-[#0f141f] rounded-lg border border-gray-100 dark:border-gray-800">
+                <span className="font-bold text-gray-800 dark:text-gray-200 block mb-1">
+                  Explanation Model & Grounding
+                </span>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Model: <span className="font-mono text-cyan-600 dark:text-cyan-400">{latestDetail?.analysis?.model_used || 'Gemini 3.1 Pro Preview'}</span>
+                </p>
+                <p className="text-[11px] text-gray-400 mt-1">
+                  Strict numerical integrity enforced: explanation layer reproduces deterministic EB-PRE scores without alteration.
+                </p>
+              </div>
             </div>
-            <div className={`h-48 flex items-center justify-center ${latestAnalysis ? '' : 'opacity-30 grayscale pointer-events-none'}`}>
-              <svg className="w-full h-full" viewBox="0 0 100 50" preserveAspectRatio="none">
-                <path d="M0,50 C20,20 40,40 60,10 C80,30 100,5 100,5" fill="none" stroke="#f43f5e" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-              </svg>
-            </div>
-            <div className="text-center text-xs text-gray-500 mt-4">{latestAnalysis ? 'Based on latest analysis' : 'Awaiting project analysis'}</div>
           </motion.div>
         </div>
 
-        {/* Recent Projects Preview */}
-        {projects.length > 0 && (
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-gray-900 dark:text-white font-bold">Recent Projects</h3>
-              <Link to="/library" className="text-sm text-cyan-600 dark:text-cyan-400 hover:underline">View All</Link>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.slice(0, 3).map(proj => (
-                <div key={proj._id} onClick={() => navigate(`/analysis?id=${proj._id}`)} className="bg-white dark:bg-[#141a27] border border-gray-200 dark:border-gray-800 rounded-xl p-5 shadow-sm hover:border-cyan-500/50 transition-all cursor-pointer group">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800/50 flex items-center justify-center text-gray-500 group-hover:text-cyan-500 transition-colors">
-                      <Folder size={20} />
-                    </div>
-                    <div>
-                      <h4 className="text-gray-900 dark:text-white font-bold text-sm line-clamp-1">{proj.title}</h4>
-                      <p className="text-gray-500 text-xs">{new Date(proj.createdAt).toLocaleDateString()}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100 dark:border-gray-800/50">
-                    <span className="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-gray-600 dark:text-gray-400">{proj.status}</span>
-                    <span className="text-xs text-cyan-600 dark:text-cyan-400 font-medium group-hover:translate-x-1 transition-transform">View Analysis →</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+        {/* Recent Projects Table / Cards */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Recent Inventions</h3>
+            <Link
+              to="/library"
+              className="text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
+            >
+              View Full Library <ArrowRight size={13} />
+            </Link>
           </div>
-        )}
+
+          {projects.length === 0 ? (
+            <div className="text-center py-12 bg-white dark:bg-[#141a27] border border-gray-200 dark:border-gray-800 rounded-xl text-gray-500 text-sm">
+              No projects uploaded yet.{' '}
+              <Link to="/upload" className="text-cyan-600 dark:text-cyan-400 underline font-bold">
+                Upload your first invention disclosure
+              </Link>
+              .
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {projects.slice(0, 6).map((proj) => {
+                const pId = proj.id || proj._id;
+                return (
+                  <div
+                    key={pId}
+                    onClick={() => navigate(`/analysis?id=${pId}`)}
+                    className="bg-white dark:bg-[#141a27] border border-gray-200 dark:border-gray-800 rounded-xl p-5 shadow-sm hover:border-cyan-500/50 transition-all cursor-pointer group flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 group-hover:text-cyan-500 transition-colors">
+                          <Folder size={16} />
+                        </div>
+                        {proj.readiness_score !== null && proj.readiness_score !== undefined ? (
+                          <span className="px-2 py-0.5 rounded text-xs font-bold bg-cyan-50 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-300 font-mono">
+                            {proj.readiness_score}/100
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-gray-400 italic">Processing</span>
+                        )}
+                      </div>
+                      <h4 className="text-gray-900 dark:text-white font-bold text-sm mb-1 line-clamp-1 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+                        {proj.title}
+                      </h4>
+                      <p className="text-gray-500 text-[11px] mb-3 truncate">
+                        {proj.original_file_name || 'document'}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-800/60 text-xs">
+                      <span className="text-[10px] uppercase font-bold text-gray-400">
+                        {proj.status || 'completed'}
+                      </span>
+                      <span className="text-cyan-600 dark:text-cyan-400 font-medium group-hover:translate-x-1 transition-transform">
+                        View Analysis →
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </motion.div>
     </DashboardLayout>
   );

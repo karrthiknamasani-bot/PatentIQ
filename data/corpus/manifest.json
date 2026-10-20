@@ -1,0 +1,26 @@
+{
+  "corpus_name": "PatentIQ-PriorArt-Core",
+  "version": "1.0.0",
+  "source": "USPTO Public Bulk Data / Google Patents",
+  "acquisition_date": "2026-09-15",
+  "num_patents": 15,
+  "num_chunks": 78,
+  "languages": [
+    "en"
+  ],
+  "jurisdictions": [
+    "US"
+  ],
+  "schema_version": "1.0.0",
+  "checksums": {
+    "raw_file": "b44618ea6fc5aebac7abf118989417db63fdf6a569dcc2f12de7a7235fd65273",
+    "normalized_file": "da3deb544075e41147567b6e5f1350fdf5d238f6d9a3c7a70d384a45e7204f88",
+    "chunks_file": "472cc30c7c4b5214cc2f0c70d10b7acc7cd0910a5cdf1d2dc26425f1d41029c8"
+  },
+  "metadata": {
+    "chunk_max_chars": 1000,
+    "chunk_overlap_chars": 200,
+    "avg_chunks_per_patent": 5.2,
+    "generator": "scripts/ingest_patents.py"
+  }
+}

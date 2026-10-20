@@ -1,0 +1,21 @@
+{
+  "manifest_version": "1.0.0",
+  "created_at": "2026-10-20T17:46:49.206189+00:00",
+  "corpus_id": "uspto_2016_10_11_pilot_v1",
+  "collection_name": "patent_prior_art_pilot_uspto2016",
+  "embedding_model": "BAAI/bge-base-en-v1.5",
+  "embedding_dimension": 768,
+  "distance_metric": "COSINE",
+  "statistics": {
+    "accepted_patent_documents": 100,
+    "total_chunks_available": 9375,
+    "indexed_chunks": 500,
+    "embedded_chunks": 500,
+    "successfully_indexed_qdrant_points": 500
+  },
+  "storage": {
+    "qdrant_storage_dir": "C:\\Users\\karrt\\Downloads\\PatentIQ\\data\\real_patents_pilot\\qdrant_db",
+    "bm25_index_file": "C:\\Users\\karrt\\Downloads\\PatentIQ\\data\\real_patents_pilot\\bm25_index.pkl",
+    "embeddings_cache_file": "C:\\Users\\karrt\\Downloads\\PatentIQ\\data\\real_patents_pilot\\embeddings_cache.pkl"
+  }
+}

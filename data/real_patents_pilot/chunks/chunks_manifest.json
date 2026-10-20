@@ -1,0 +1,29 @@
+{
+  "manifest_version": "1.0.0",
+  "created_at": "2026-10-16T06:02:35.466676+00:00",
+  "corpus_id": "uspto_2016_10_11_pilot_v1",
+  "source_ingest_file": "C:\\Users\\karrt\\Downloads\\PatentIQ\\data\\real_patents_pilot\\real_patents_pilot_ingest.jsonl",
+  "total_patents": 100,
+  "total_chunks": 9375,
+  "average_chunks_per_patent": 93.75,
+  "average_chunk_length_chars": 767.63,
+  "section_distribution": {
+    "title": 100,
+    "abstract": 104,
+    "claims": 2025,
+    "description": 7003,
+    "embodiments": 143
+  },
+  "chunk_file": {
+    "filename": "pilot_chunks.jsonl",
+    "path": "C:\\Users\\karrt\\Downloads\\PatentIQ\\data\\real_patents_pilot\\chunks\\pilot_chunks.jsonl",
+    "size_bytes": 11608629,
+    "size_mb": 11.07,
+    "sha256": "1885665cf17cf6c823b685fd89b42c27fb30a2919dfb83e21edebcd3cf4cd9c0"
+  },
+  "chunking_parameters": {
+    "max_chars": 1000,
+    "overlap_chars": 200,
+    "algorithm": "PatentCorpusChunker"
+  }
+}

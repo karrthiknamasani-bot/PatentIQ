@@ -1,0 +1,15 @@
+TITLE: AUTONOMOUS ROBOTIC SURGICAL SYSTEM WITH REAL-TIME TISSUE COMPLIANCE AND DUAL-DRIVE ARTICULATION
+
+FIELD OF THE INVENTION:
+This invention relates to minimally invasive robotic surgery systems, specifically automated force-feedback control and tissue compliance estimation.
+
+BACKGROUND OF THE INVENTION:
+Traditional surgical end effectors lack dynamic real-time telemetry to prevent tissue trauma during automated suturing and clamping. Existing instruments rely on manual surgeon tactile estimation, which is lost across laparoscopic teleoperation linkages.
+
+SUMMARY OF THE INVENTION:
+The present system comprises an articulated multi-axis surgical wrist, an array of piezoelectric impedance sensors embedded at the gripper jaws, an optical coherence tomography (OCT) subsurface scanner, and an adaptive FPGA-based closed-loop neural controller. The neural controller continuously modulates actuator displacement and clamping force at 1000 Hz based on real-time tissue elasticity gradients.
+
+TECHNICAL CLAIMS:
+1. An autonomous surgical instrument system comprising: an articulated multi-axis end effector; a piezoelectric sensor array positioned on the end effector configured to measure real-time tissue mechanical impedance; and a digital controller configured to dynamically modulate motor drive current based on said measured impedance.
+2. The surgical instrument system of claim 1, further comprising an optical coherence tomography probe integrated coaxially within the end effector to generate subsurface depth profiles of target tissue.
+3. The surgical instrument system of claim 1, wherein the digital controller executes an adaptive closed-loop impedance estimation algorithm at a control frequency of at least 1 kilohertz to prevent tissue shear.

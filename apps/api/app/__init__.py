@@ -1,0 +1,1 @@
+"""PatentIQ FastAPI Application Package."""
