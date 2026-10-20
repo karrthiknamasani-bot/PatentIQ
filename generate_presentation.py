@@ -149,52 +149,42 @@ p3.font.size = Pt(13)
 p3.font.color.rgb = COLOR_TEXT_MUTED
 p3.space_before = Pt(8)
 
-# Details Footer (Student, Guide, Degree)
-details_box = slide1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1.3), Inches(4.3), Inches(10.7), Inches(1.9))
-details_box.fill.solid()
-details_box.fill.fore_color.rgb = RGBColor(16, 16, 16)
-details_box.line.color.rgb = COLOR_BORDER
-details_box.line.width = Pt(1)
+# Details Footer - Simple, Minimalist (Exact Match to User Template)
+# 1. Team Members Box
+team_box = slide1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1.3), Inches(4.35), Inches(10.7), Inches(0.52))
+team_box.fill.solid()
+team_box.fill.fore_color.rgb = RGBColor(16, 16, 16)
+team_box.line.color.rgb = COLOR_BORDER
+team_box.line.width = Pt(1)
 
-tb_d = slide1.shapes.add_textbox(Inches(1.5), Inches(4.45), Inches(5.0), Inches(1.6))
-tf_d = tb_d.text_frame
-p_s1 = tf_d.paragraphs[0]
-p_s1.text = "CANDIDATE DETAILS"
-p_s1.font.name = FONT_FAMILY
-p_s1.font.size = Pt(10)
-p_s1.font.bold = True
-p_s1.font.color.rgb = COLOR_TEXT_MUTED
-p_s2 = tf_d.add_paragraph()
-p_s2.text = "N. GAGAN KARTHIK"
-p_s2.font.name = FONT_FAMILY
-p_s2.font.size = Pt(16)
-p_s2.font.bold = True
-p_s2.font.color.rgb = COLOR_TEXT_PRIMARY
-p_s3 = tf_d.add_paragraph()
-p_s3.text = "Register No: 23BDS1100\nB.Tech. Computer Science and Engineering\n(Specialization in Data Science)"
-p_s3.font.name = FONT_FAMILY
-p_s3.font.size = Pt(12)
-p_s3.font.color.rgb = COLOR_TEXT_SECONDARY
+tf_team = team_box.text_frame
+tf_team.word_wrap = True
+p_t = tf_team.paragraphs[0]
+p_t.text = "N. Gagan Karthik — 23BDS1100  |  K. Bharath — 23BDS1033  |  P. Srujan — 23BCE1111"
+p_t.font.name = FONT_FAMILY
+p_t.font.size = Pt(13)
+p_t.font.bold = True
+p_t.font.color.rgb = COLOR_TEXT_PRIMARY
+p_t.alignment = PP_ALIGN.LEFT
 
-tb_g = slide1.shapes.add_textbox(Inches(6.8), Inches(4.45), Inches(5.0), Inches(1.6))
-tf_g = tb_g.text_frame
-p_g1 = tf_g.paragraphs[0]
-p_g1.text = "PROJECT SUPERVISOR & GUIDE"
-p_g1.font.name = FONT_FAMILY
-p_g1.font.size = Pt(10)
-p_g1.font.bold = True
-p_g1.font.color.rgb = COLOR_TEXT_MUTED
-p_g2 = tf_g.add_paragraph()
-p_g2.text = "Dr. VIJAYRAJ J"
-p_g2.font.name = FONT_FAMILY
-p_g2.font.size = Pt(16)
-p_g2.font.bold = True
-p_g2.font.color.rgb = COLOR_TEXT_PRIMARY
-p_g3 = tf_g.add_paragraph()
-p_g3.text = "Department of Data Science\nSchool of Computer Science and Engineering (SCOPE)"
-p_g3.font.name = FONT_FAMILY
-p_g3.font.size = Pt(12)
-p_g3.font.color.rgb = COLOR_TEXT_SECONDARY
+# 2. Institution Sub-line
+tb_inst = slide1.shapes.add_textbox(Inches(1.3), Inches(4.95), Inches(10.7), Inches(0.45))
+tf_inst = tb_inst.text_frame
+p_inst = tf_inst.paragraphs[0]
+p_inst.text = "School of Computer Science & Engineering • VIT Chennai"
+p_inst.font.name = FONT_FAMILY
+p_inst.font.size = Pt(13)
+p_inst.font.color.rgb = COLOR_TEXT_SECONDARY
+
+# 3. Guide Line
+tb_guide = slide1.shapes.add_textbox(Inches(1.3), Inches(5.45), Inches(10.7), Inches(0.55))
+tf_guide = tb_guide.text_frame
+p_g = tf_guide.paragraphs[0]
+p_g.text = "Guide : Dr. Vijayaraj J"
+p_g.font.name = FONT_FAMILY
+p_g.font.size = Pt(16)
+p_g.font.bold = True
+p_g.font.color.rgb = COLOR_TEXT_PRIMARY
 
 # ==============================================================================
 # SLIDE 2: Problem Statement & Motivation
