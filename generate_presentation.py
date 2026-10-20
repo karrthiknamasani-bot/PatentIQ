@@ -6,7 +6,8 @@ from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 from pptx.enum.shapes import MSO_SHAPE
 
 # Output path
-OUTPUT_PATH = r"C:\Users\karrt\Downloads\PatentIQ_Final\PatentIQ_Final_Review_Presentation.pptx"
+OUTPUT_PATH = r"C:\Users\karrt\Downloads\PatentIQ_Final\PatentIQ_Final_Review_Presentation_Updated.pptx"
+ORIGINAL_PATH = r"C:\Users\karrt\Downloads\PatentIQ_Final\PatentIQ_Final_Review_Presentation.pptx"
 
 prs = Presentation()
 prs.slide_width = Inches(13.333)  # 16:9 widescreen
@@ -376,116 +377,28 @@ add_card(slide6, Inches(8.8), Inches(1.7), Inches(3.7), Inches(5.3),
 )
 
 # ==============================================================================
-# SLIDE 7: REAL SYSTEM ARCHITECTURE DIAGRAM
+# SLIDE 7: REAL SYSTEM ARCHITECTURE DIAGRAM (FULL ARCHITECTURE)
 # ==============================================================================
 slide7 = prs.slides.add_slide(prs.slide_layouts[6])
 set_slide_background(slide7)
-add_header(slide7, "System Architecture & Real Dataflow Pipeline")
+add_header(slide7, "System Architecture & End-to-End Pipeline Dataflow")
 
-# Let's draw the real architectural dataflow with clean styled boxes and connector lines
-def draw_arch_box(slide, left, top, width, height, title, subtitle, bg_color=COLOR_BOX_BG, border_color=COLOR_BORDER):
-    shape = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
-    shape.fill.solid()
-    shape.fill.fore_color.rgb = bg_color
-    shape.line.color.rgb = border_color
-    shape.line.width = Pt(1.2)
-    
-    tf = shape.text_frame
-    tf.word_wrap = True
-    p1 = tf.paragraphs[0]
-    p1.text = title
-    p1.alignment = PP_ALIGN.CENTER
-    p1.font.name = FONT_FAMILY
-    p1.font.size = Pt(12)
-    p1.font.bold = True
-    p1.font.color.rgb = COLOR_TEXT_PRIMARY
-    
-    if subtitle:
-        p2 = tf.add_paragraph()
-        p2.text = subtitle
-        p2.alignment = PP_ALIGN.CENTER
-        p2.font.name = FONT_FAMILY
-        p2.font.size = Pt(9.5)
-        p2.font.color.rgb = COLOR_TEXT_SECONDARY
-        p2.space_before = Pt(3)
+# Frame Card Container
+card7 = slide7.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.55), Inches(11.733), Inches(5.55))
+card7.fill.solid()
+card7.fill.fore_color.rgb = COLOR_CARD
+card7.line.color.rgb = COLOR_BORDER
+card7.line.width = Pt(1.2)
 
-def draw_arrow(slide, left, top, width, height):
-    arrow = slide.shapes.add_shape(MSO_SHAPE.RIGHT_ARROW, left, top, width, height)
-    arrow.fill.solid()
-    arrow.fill.fore_color.rgb = COLOR_TEXT_MUTED
-    arrow.line.color.rgb = COLOR_TEXT_MUTED
+# Insert the Real Architecture Diagram Image
+arch_img_path = r"C:\Users\karrt\Downloads\PatentIQ_Final\report_figures\fig_full_architecture_gitdiagram.png"
+if os.path.exists(arch_img_path):
+    img_width = Inches(9.3)
+    img_height = Inches(5.38)
+    img_left = Inches(0.8) + (Inches(11.733) - img_width) / 2
+    img_top = Inches(1.63)
+    slide7.shapes.add_picture(arch_img_path, img_left, img_top, width=img_width, height=img_height)
 
-# Row 1: Input to Retrieval
-draw_arch_box(slide7, Inches(0.8), Inches(1.8), Inches(2.2), Inches(1.1),
-    "1. USER DISCLOSURE", "DOCX / PDF / TXT Upload\nMetadata & Domain")
-
-draw_arrow(slide7, Inches(3.1), Inches(2.2), Inches(0.4), Inches(0.25))
-
-draw_arch_box(slide7, Inches(3.6), Inches(1.8), Inches(2.5), Inches(1.1),
-    "2. INGESTION & CHUNKING", "Section Parser (Claims/Desc)\nSliding Window (500 chars)")
-
-draw_arrow(slide7, Inches(6.2), Inches(2.2), Inches(0.4), Inches(0.25))
-
-draw_arch_box(slide7, Inches(6.7), Inches(1.8), Inches(2.6), Inches(1.1),
-    "3. FEATURE EXTRACTION", "AST & NLP Rule Heuristics\nPredicate Normalization")
-
-draw_arrow(slide7, Inches(9.4), Inches(2.2), Inches(0.4), Inches(0.25))
-
-draw_arch_box(slide7, Inches(9.9), Inches(1.8), Inches(2.6), Inches(1.1),
-    "4. USPTO CORPUS INDEX", "100-Patent Pilot (500 chunks)\nBM25 + Qdrant Vector DB")
-
-# Row 2: Hybrid Retrieval to Reranking
-draw_arch_box(slide7, Inches(0.8), Inches(3.4), Inches(2.6), Inches(1.1),
-    "5. DUAL RETRIEVAL", "BM25 Lexical (k1=1.5, b=0.75)\nBGE-Small Dense Embeddings")
-
-draw_arrow(slide7, Inches(3.5), Inches(3.8), Inches(0.4), Inches(0.25))
-
-draw_arch_box(slide7, Inches(4.0), Inches(3.4), Inches(2.6), Inches(1.1),
-    "6. RECIPROCAL RANK FUSION", "RRF Formula: Score = 1/(k+rank)\nScore Normalization Free")
-
-draw_arrow(slide7, Inches(6.7), Inches(3.8), Inches(0.4), Inches(0.25))
-
-draw_arch_box(slide7, Inches(7.2), Inches(3.4), Inches(2.6), Inches(1.1),
-    "7. BGE CROSS-ENCODER", "Pairwise Transformer Reranker\nms-marco-MiniLM / BGE Base")
-
-draw_arrow(slide7, Inches(9.9), Inches(3.8), Inches(0.4), Inches(0.25))
-
-draw_arch_box(slide7, Inches(10.4), Inches(3.4), Inches(2.1), Inches(1.1),
-    "8. EVIDENCE MAPPING", "Direct / Partial / Context\nPrior-Art Claim Overlap")
-
-# Row 3: Assessment to Presentation
-draw_arch_box(slide7, Inches(0.8), Inches(5.0), Inches(2.8), Inches(1.1),
-    "9. DETERMINISTIC EB-PRE", "6 Metric Dimensions (0-100)\nNovelty, Obviousness, Breadth")
-
-draw_arrow(slide7, Inches(3.7), Inches(5.4), Inches(0.4), Inches(0.25))
-
-draw_arch_box(slide7, Inches(4.2), Inches(5.0), Inches(2.8), Inches(1.1),
-    "10. GROUNDED EXPLAINER", "Google Gemini 3.1 Pro\nDeterministic 429 Fallback")
-
-draw_arrow(slide7, Inches(7.1), Inches(5.4), Inches(0.4), Inches(0.25))
-
-draw_arch_box(slide7, Inches(7.6), Inches(5.0), Inches(2.6), Inches(1.1),
-    "11. DURABLE DATABASE", "ACID SQLite Store\nProjects, Scores & Mappings")
-
-draw_arrow(slide7, Inches(10.3), Inches(5.4), Inches(0.4), Inches(0.25))
-
-draw_arch_box(slide7, Inches(10.8), Inches(5.0), Inches(1.7), Inches(1.1),
-    "12. REACT 19 UI", "Tailwind CSS\nInteractive Matrix")
-
-# Architecture Highlights Bar
-bar = slide7.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(6.4), Inches(11.7), Inches(0.6))
-bar.fill.solid()
-bar.fill.fore_color.rgb = COLOR_CARD
-bar.line.color.rgb = COLOR_BORDER
-bar.line.width = Pt(1)
-tf_bar = bar.text_frame
-p_bar = tf_bar.paragraphs[0]
-p_bar.text = "CORE GUARANTEE: Zero hallucination in readiness scores — EB-PRE is 100% deterministic mathematical evaluation; LLM is restricted solely to formatting human-readable summaries."
-p_bar.alignment = PP_ALIGN.CENTER
-p_bar.font.name = FONT_FAMILY
-p_bar.font.size = Pt(10.5)
-p_bar.font.bold = True
-p_bar.font.color.rgb = COLOR_TEXT_PRIMARY
 
 # ==============================================================================
 # SLIDE 8: Multi-Stage Hybrid Retrieval & Fusion
@@ -779,13 +692,20 @@ add_card(slide15, Inches(8.8), Inches(1.7), Inches(3.7), Inches(5.3),
 
 # Save presentation
 prs.save(OUTPUT_PATH)
+print(f"Successfully generated 15-slide PowerPoint at: {OUTPUT_PATH}")
+
+try:
+    prs.save(ORIGINAL_PATH)
+    print(f"Overwrote original file at: {ORIGINAL_PATH}")
+except Exception as exc:
+    print(f"Could not overwrite {ORIGINAL_PATH} directly because PowerPoint has it open: {exc}")
 
 # Also copy to root directory if PatentIQ exists
-root_path = r"C:\Users\karrt\Downloads\PatentIQ\PatentIQ_Final_Review_Presentation.pptx"
-try:
-    prs.save(root_path)
-    print(f"Saved copy to {root_path}")
-except Exception as e:
-    pass
+for target_dir in [r"C:\Users\karrt\Downloads\PatentIQ"]:
+    try:
+        updated_target = os.path.join(target_dir, "PatentIQ_Final_Review_Presentation_Updated.pptx")
+        prs.save(updated_target)
+        print(f"Saved copy to {updated_target}")
+    except Exception as e:
+        pass
 
-print(f"Successfully generated 15-slide PowerPoint at: {OUTPUT_PATH}")
